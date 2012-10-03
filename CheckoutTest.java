@@ -152,39 +152,43 @@ public class CheckoutTest {
     }
 
     private int priceForItem(char item, int count) {
-        int total = 0;
+
 
 
         final Optional<Discount> optionalDiscount = prices.get(item).getOptionalDiscount();
         if ( optionalDiscount.isPresent()) {
 
-            final Discount discount = optionalDiscount.get();
-            int quantity = discount.getDiscountQuantity();
-            int discountedPrice = discount.getDiscountedPrice();
-
-            int times = count / quantity;
-            int nonDiscounted = count % quantity;
-
-
-            for (int i = 0; i < times; i++) {
-                      total += discountedPrice;
-                  }
-
-            total += sumNonDiscounted(item, nonDiscounted);
-
-
+            return calcTotalPriceForItemWhenDiscount(item, count, optionalDiscount.get());
 
         } else {
 
-             total += sumNonDiscounted(item, count);
+             return calcTotalPriceForItemWhenNoDiscount(item, count);
         }
 
 
 
+    }
+
+    private int calcTotalPriceForItemWhenDiscount(char item, int count, Discount discount) {
+        int total = 0;
+
+        int quantity = discount.getDiscountQuantity();
+        int discountedPrice = discount.getDiscountedPrice();
+
+        int times = count / quantity;
+        int nonDiscounted = count % quantity;
+
+
+        for (int i = 0; i < times; i++) {
+                  total += discountedPrice;
+              }
+
+        total += calcTotalPriceForItemWhenNoDiscount(item, nonDiscounted);
+
         return total;
     }
 
-    private int sumNonDiscounted(char item, int nonDiscounted) {
+    private int calcTotalPriceForItemWhenNoDiscount(char item, int nonDiscounted) {
         int total = 0;
         for (int i = 0; i < nonDiscounted; i++) {
                     total += prices.get(item).getPrice();
