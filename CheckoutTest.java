@@ -136,10 +136,10 @@ public class CheckoutTest {
             return 0;
         }
 
-        return calcPrices(scanned);
+        return calcTotal(scanned);
     }
 
-    private int calcPrices(String scanned) {
+    private int calcTotal(String scanned) {
 
         int total = 0;
 
@@ -154,7 +154,6 @@ public class CheckoutTest {
     private int priceForItem(char item, int count) {
         int total = 0;
 
-        int nonDiscounted = count;
 
         final Optional<Discount> optionalDiscount = prices.get(item).getOptionalDiscount();
         if ( optionalDiscount.isPresent()) {
@@ -164,22 +163,32 @@ public class CheckoutTest {
             int discountedPrice = discount.getDiscountedPrice();
 
             int times = count / quantity;
-            nonDiscounted = count % quantity;
+            int nonDiscounted = count % quantity;
 
 
             for (int i = 0; i < times; i++) {
                       total += discountedPrice;
                   }
 
+            total += sumNonDiscounted(item, nonDiscounted);
+
+
+
+        } else {
+
+             total += sumNonDiscounted(item, count);
         }
 
 
 
+        return total;
+    }
 
-
+    private int sumNonDiscounted(char item, int nonDiscounted) {
+        int total = 0;
         for (int i = 0; i < nonDiscounted; i++) {
-            total += prices.get(item).getPrice();
-        }
+                    total += prices.get(item).getPrice();
+                }
         return total;
     }
 
