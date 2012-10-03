@@ -57,9 +57,6 @@ public class CheckoutTest {
             return price;
         }
 
-
-
-
     }
 
     Map<Character, Price> prices = new HashMap<Character, Price>();
@@ -142,29 +139,29 @@ public class CheckoutTest {
         return calcPrices(scanned);
     }
 
-    private int calcPrices(String s) {
+    private int calcPrices(String scanned) {
 
         int total = 0;
 
-        for (Map.Entry<Character, Price> i : prices.entrySet()) {
-            total += priceForItem(s, i.getKey());
+        for (Character  character : prices.keySet()) {
+            final int count = count(scanned, character);
+            total += priceForItem(character, count);
         }
 
         return total;
     }
 
-    private int priceForItem(String s, char item) {
+    private int priceForItem(char item, int count) {
         int total = 0;
 
-        int count = count(s, item);
+        int nonDiscounted = count;
 
+        final Optional<Discount> optionalDiscount = prices.get(item).getOptionalDiscount();
+        if ( optionalDiscount.isPresent()) {
 
-         int nonDiscounted = count;
-
-        if ( prices.get(item).getOptionalDiscount().isPresent()) {
-
-            int quantity = prices.get(item).getOptionalDiscount().get().getDiscountQuantity();
-            int discountedPrice = prices.get(item).getOptionalDiscount().get().getDiscountedPrice();
+            final Discount discount = optionalDiscount.get();
+            int quantity = discount.getDiscountQuantity();
+            int discountedPrice = discount.getDiscountedPrice();
 
             int times = count / quantity;
             nonDiscounted = count % quantity;
@@ -186,12 +183,12 @@ public class CheckoutTest {
         return total;
     }
 
-    private int count(String s, char toCount) {
-        final char[] chars = s.toCharArray();
+    private int count(String scanned, char itemToCount) {
+        final char[] chars = scanned.toCharArray();
 
         int count = 0;
         for (char c : chars) {
-            if (c == toCount) {
+            if (c == itemToCount) {
                 count++;
             }
         }
