@@ -3,16 +3,13 @@ import java.util.List;
 
 public class PrimeFactor {
     public List<Integer> gen(int input) {
-        if (input == 1) {
-            return new ArrayList<Integer>();
-        }
+
         List<Integer> output = new ArrayList<Integer>();
 
         final List<Integer> primeFactors = primeFactors(input);
 
         output.addAll(primeFactors);
 
-        int i = 0;
         while (product(output) != input) {
                 output.add(primeFactors.get(0));
         }
@@ -26,16 +23,20 @@ public class PrimeFactor {
         for (int i = 1; i <= input; i++) {
             for (int j = input; j > 0; j--) {
                 if (i * j == input) {
-                    if (isPrime(i) && !primeFactors.contains(i)) {
+                    if (primeAndNotDuplicate(primeFactors, i)) {
                         primeFactors.add(i);
                     }
-                    if (isPrime(j) && !primeFactors.contains(j)) {
+                    if (primeAndNotDuplicate(primeFactors, j)) {
                         primeFactors.add(j);
                     }
                 }
             }
         }
         return primeFactors;
+    }
+
+    private boolean primeAndNotDuplicate(List<Integer> primeFactors, int i) {
+        return isPrime(i) && !primeFactors.contains(i);
     }
 
     private int product(List<Integer> list) {
