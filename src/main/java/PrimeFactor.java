@@ -1,5 +1,3 @@
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,25 +6,18 @@ public class PrimeFactor {
         if (input == 1) {
             return new ArrayList<Integer>();
         }
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> output = new ArrayList<Integer>();
 
         final List<Integer> primeFactors = primeFactors(input);
 
+        output.addAll(primeFactors);
 
         int i = 0;
-        while (product(list) != input) {
-
-                if ( i >= primeFactors.size()) {
-                list.add(primeFactors.get(i-1));
-                }
-                else {
-                    list.add(primeFactors.get(i++));
-
-                }
-
-
+        while (product(output) != input) {
+                output.add(primeFactors.get(0));
         }
-        return list;
+
+        return output;
     }
 
     private List<Integer> primeFactors(int input) {
@@ -35,7 +26,6 @@ public class PrimeFactor {
         for (int i = 1; i <= input; i++) {
             for (int j = input; j > 0; j--) {
                 if (i * j == input) {
-
                     if (isPrime(i) && !primeFactors.contains(i)) {
                         primeFactors.add(i);
                     }
@@ -43,7 +33,6 @@ public class PrimeFactor {
                         primeFactors.add(j);
                     }
                 }
-
             }
         }
         return primeFactors;
@@ -53,7 +42,6 @@ public class PrimeFactor {
         int total = 1;
         for (int i = 0; i < list.size(); i++) {
             total *= list.get(i);
-
         }
         return total;
     }
